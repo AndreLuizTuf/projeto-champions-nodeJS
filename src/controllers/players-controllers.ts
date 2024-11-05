@@ -3,9 +3,9 @@ import { getPlayerService } from "../services/players-service";
 import { ok } from "../utils/http-helpers";
 
 export const getPlayer = async (req: Request, res: Response) => {
-  const data = await getPlayerService();
+  const httpResponse = await getPlayerService();
 
-  const response = await ok(data);
+  
 
-  res.status(response.statusCode).json(data);
+  res.status(httpResponse.statusCode).json(httpResponse.body);
 };
