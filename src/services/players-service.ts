@@ -46,9 +46,14 @@ export const createPlayerService = async (player: PlayerModel) => {
 
 export const deletePlayerService = async (id: number) => {
   let response = null;
-  await PlayerRepostory.deleteOnePlayer(id);
+  const isDeleted = await PlayerRepostory.deleteOnePlayer(id);
 
-  response = HttpResponse.ok({ message: "deleted" });
+  if (isDeleted) {
+    response = await HttpResponse.ok({ message: "deleted" });
+  } else {
+    response = await HttpResponse.badRequest();
+  }
+  
   return response;
 };
 
@@ -56,7 +61,7 @@ export const updatePlayerService = async (
   id: number,
   statistics: StatisticsModel
 ) => {
-  const data = await PlayerRepostory.findAndModifyPlayer(id, statistics)
+  const data = await PlayerRepostory.findAndModifyPlayer(id, statistics);
   let response = null;
 
   if (Object.keys(data).length === 0) {
@@ -64,6 +69,6 @@ export const updatePlayerService = async (
   } else {
     response = await HttpResponse.ok(data);
   }
-  
+
   return response;
 };
