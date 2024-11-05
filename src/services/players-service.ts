@@ -22,9 +22,9 @@ export const getPlayerByIdService = async (id: number) => {
   let response = null;
 
   if (data) {
-    response = HttpResponse.ok(data);
+    response = await HttpResponse.ok(data);
   } else {
-    response = HttpResponse.noContent();
+    response = await HttpResponse.noContent();
   }
 
   return response;
@@ -38,7 +38,7 @@ export const createPlayerService = async (player: PlayerModel) => {
     await PlayerRepostory.insertPlayer(player);
     response = await HttpResponse.created();
   } else {
-    response = HttpResponse.badRequest();
+    response = await HttpResponse.badRequest();
   }
 
   return response;
@@ -56,5 +56,14 @@ export const updatePlayerService = async (
   id: number,
   statistics: StatisticsModel
 ) => {
+  const data = await PlayerRepostory.findAndModifyPlayer(id, statistics)
+  let response = null;
+
+  if (Object.keys(data).length === 0) {
+    response = await HttpResponse.badRequest();
+  } else {
+    response = await HttpResponse.ok(data);
+  }
   
+  return response;
 };
